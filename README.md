@@ -95,14 +95,17 @@ Before deploying the code, you must ensure the following APIs are enabled in you
    git clone https://github.com/gabbarbosateixeira/cymbal-catering-mcp.git
    cd cymbal-catering-mcp
    ```
-3. **Identify your target GCP Project ID**:
-   Your active Project ID is automatically set in Cloud Shell. You can fetch and store it in a shell variable for easy copy-pasting:
+3. **Initialize Environment Variables**:
+   Fetch your active Project ID and define a secure password for your PostgreSQL database. Run these commands to store them in your shell session:
    ```bash
    PROJECT_ID=$(gcloud config get-value project)
-   echo "Active Project ID: $PROJECT_ID"
+   DB_PASSWORD="your-secure-password" # REPLACE with your own database password
+
+   echo "Project ID set to: $PROJECT_ID"
    ```
 
 Follow these sequential steps in your terminal to deploy the complete architecture.
+
 
 
 ### Step 1: Network & Private Database Setup
@@ -135,11 +138,16 @@ gcloud sql instances create cymbal-pg \
     --network=cymbal-vpc \
     --no-assign-ip \
     --region=us-central1 \
-    --root-password="<DB_PASSWORD>"
+    --root-password="$DB_PASSWORD"
 
 # 5. Initialize the database and default postgres user
 gcloud sql databases create cymbal --instance=cymbal-pg
+
+# 6. Retrieve and save the Private IP address of the database
+DB_PRIVATE_IP=$(gcloud sql instances describe cymbal-pg --format="value(ipAddresses.ipAddress)")
+echo "DB_PRIVATE_IP set to: $DB_PRIVATE_IP"
 ```
+
 
 ---
 
@@ -240,8 +248,11 @@ Since we deployed the MCP server with public ingress allowed (`--ingress=all`), 
 
 #### A. Initialize the session and get a Session ID
 ```bash
+# Get the MCP Server Service URL from Cloud Run
+MCP_SERVICE_URL=$(gcloud run services describe cymbal-mcp --region=us-central1 --format="value(status.url)")
+
 TOKEN=$(gcloud auth print-identity-token)
-curl -i -X POST https://<MCP_SERVICE_URL>/mcp \
+curl -i -X POST $MCP_SERVICE_URL/mcp \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json, text/event-stream" \
@@ -261,7 +272,7 @@ curl -i -X POST https://<MCP_SERVICE_URL>/mcp \
 #### B. Call the `add_client` Tool using the Session ID
 Replace `<SESSION_ID>` with the UUID from the headers:
 ```bash
-curl -X POST https://<MCP_SERVICE_URL>/mcp \
+curl -X POST $MCP_SERVICE_URL/mcp \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json, text/event-stream" \
@@ -281,6 +292,7 @@ curl -X POST https://<MCP_SERVICE_URL>/mcp \
     "id": 2
   }'
 ```
+
 
 ---
 
@@ -366,9 +378,11 @@ Google Cloud uses a centralized **Agent Registry** to catalog corporate API reso
 | **Client-Side Validation** | Gemini loads and caches your JSON schema in memory to validate arguments before calling your backend. | Prevents database injection, saves compute cycles, and keeps invalid payloads from hitting your Cloud Run container. |
 
 ### Step 1: Locate your MCP Server URL
-Go to the Cloud Run console, click on your `cymbal-mcp` service, and copy the URL. You must append `/mcp` (the designated endpoint route for JSON-RPC 2.0 traffic):
-*   **Base URL**: `https://<MCP_SERVICE_URL>`
-*   **Final MCP Server URL**: `https://<MCP_SERVICE_URL>/mcp`
+You can view your deployed MCP URL in the Cloud Run Console, or resolve it programmatically in Cloud Shell:
+```bash
+MCP_SERVICE_URL=$(gcloud run services describe cymbal-mcp --region=us-central1 --format="value(status.url)")
+echo "MCP Server URL: $MCP_SERVICE_URL/mcp"
+```
 
 ### Step 2: Retrieve the Tool Specification JSON
 Because your service is protected by IAM, you can use your active developer identity to pull the schema locally and copy it:
@@ -376,7 +390,7 @@ Because your service is protected by IAM, you can use your active developer iden
 1.  **Initialize the Stateful Session** to get the session ID:
     ```bash
     TOKEN=$(gcloud auth print-identity-token)
-    curl -i -X POST https://<MCP_SERVICE_URL>/mcp \
+    curl -i -X POST $MCP_SERVICE_URL/mcp \
       -H "Authorization: Bearer $TOKEN" \
       -H "Content-Type: application/json" \
       -H "Accept: application/json, text/event-stream" \
@@ -397,7 +411,7 @@ Because your service is protected by IAM, you can use your active developer iden
     Replace `SESSION_ID` with your copied UUID:
     ```bash
     TOKEN=$(gcloud auth print-identity-token)
-    curl -s -X POST https://<MCP_SERVICE_URL>/mcp \
+    curl -s -X POST $MCP_SERVICE_URL/mcp \
       -H "Authorization: Bearer $TOKEN" \
       -H "Content-Type: application/json" \
       -H "Accept: application/json, text/event-stream" \
@@ -410,6 +424,7 @@ Because your service is protected by IAM, you can use your active developer iden
       }' | grep -o 'data: .*' | sed 's/data: //' | jq '.result | {tools: .tools}'
     ```
     *Copy the complete JSON output (starting with `{` and ending with `}`) to your clipboard.*
+
 
 ### Step 3: Register in the Google Cloud Console
 1.  Go to **APIs & Services** > **Agent Registry** > **Add MCP Server** in your console.
