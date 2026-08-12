@@ -492,7 +492,7 @@ Gemini Enterprise must have public access to your `cymbal-mcp` service to discov
 ### Quick Demonstration
 
 Creating a new order using the MCP actions
-<img width="632" height="327" alt="Screen Recording 2026-08-12 at 2 47 07 PM" src="https://github.com/user-attachments/assets/102c590b-cd0d-41ec-9e27-71a73fd95891" />
+<img width="1261" height="654" alt="Screen Recording 2026-08-12 at 2 47 07 PM" src="https://github.com/user-attachments/assets/102c590b-cd0d-41ec-9e27-71a73fd95891" />
 
 Result in the app
 <img width="1261" height="645" alt="Screenshot 2026-08-12 at 2 53 12 PM" src="https://github.com/user-attachments/assets/b9485bc5-1039-49c9-8168-4b9d48625ace" />
