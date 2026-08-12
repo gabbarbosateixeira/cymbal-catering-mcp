@@ -95,6 +95,15 @@ To run or test components of this repository locally, you can configure your env
    * `GEMINI_MODEL`: The target Gemini model (defaults to `gemini-2.5-pro`).
    * Database credentials (`DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, etc. if you are running a local database instance).
 
+3. **Install dependencies and run the application**:
+   ```bash
+   npm install
+   npm run dev
+   ```
+   * This starts the frontend (port `3000`) and the backend API (port `3001`) concurrently.
+   * If running in **Google Cloud Shell**, preview the application by clicking the **Web Preview** button in the top-right corner of the terminal window and selecting **Preview on port 3000**.
+
+
 ---
 
 
