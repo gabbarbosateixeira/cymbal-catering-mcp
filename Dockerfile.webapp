@@ -1,0 +1,32 @@
+# Stage 1: Build React Frontend
+FROM node:20-slim AS builder
+WORKDIR /app
+COPY package.json ./
+RUN npm install --no-audit --no-fund
+COPY . .
+RUN npm run build
+
+# Stage 2: Production Server
+FROM node:20-slim
+WORKDIR /app
+
+# Install production dependencies
+COPY package.json ./
+RUN npm install --omit=dev --no-audit --no-fund
+
+# Copy built frontend assets from builder
+COPY --from=builder /app/dist ./dist
+
+# Copy backend files
+COPY db.js ./
+COPY server.js ./
+
+# Expose backend port
+EXPOSE 3001
+
+# Environment variables
+ENV PORT=3001
+ENV NODE_ENV=production
+
+# Start the server (which serves API and static frontend)
+CMD ["node", "server.js"]

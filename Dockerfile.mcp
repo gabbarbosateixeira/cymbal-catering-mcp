@@ -1,0 +1,21 @@
+FROM node:20-slim
+
+WORKDIR /app
+
+# Copy package files and install production dependencies
+COPY package*.json ./
+RUN npm install --omit=dev --no-audit --no-fund --verbose
+
+# Copy application code
+COPY db.js ./
+COPY mcp-server-cymbal.js ./
+
+# Expose the port the server listens on
+EXPOSE 3002
+
+# Environment variables
+ENV PORT=3002
+ENV NODE_ENV=production
+
+# Run the server
+CMD ["node", "mcp-server-cymbal.js"]

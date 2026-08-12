@@ -1,0 +1,9 @@
+node_modules
+dist
+.git
+.gemini
+.system_generated
+deploy.sh
+Dockerfile
+*.db
+*.log
