@@ -157,13 +157,14 @@ gcloud iam service-accounts create cymbal-mcp-sa \
     --display-name="Cymbal MCP Service Account"
 
 # 3. Grant both Service Accounts database access permissions
-gcloud projects add-iam-policy-binding <PROJECT_ID> \
-    --member="serviceAccount:cymbal-webapp-sa@<PROJECT_ID>.iam.gserviceaccount.com" \
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:cymbal-webapp-sa@$PROJECT_ID.iam.gserviceaccount.com" \
     --role="roles/cloudsql.client"
 
-gcloud projects add-iam-policy-binding <PROJECT_ID> \
-    --member="serviceAccount:cymbal-mcp-sa@<PROJECT_ID>.iam.gserviceaccount.com" \
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:cymbal-mcp-sa@$PROJECT_ID.iam.gserviceaccount.com" \
     --role="roles/cloudsql.client"
+
 ```
 
 ---
@@ -195,22 +196,23 @@ We deploy both applications. The MCP Server deployment is strictly scaled to a *
 ```bash
 # 1. Deploy the MCP Server (Authenticated, Private Egress, Scaled to 1 instance)
 gcloud run deploy cymbal-mcp \
-    --image=us-central1-docker.pkg.dev/<PROJECT_ID>/cymbal-repo/mcp-server:latest \
+    --image=us-central1-docker.pkg.dev/$PROJECT_ID/cymbal-repo/mcp-server:latest \
     --region=us-central1 \
     --no-allow-unauthenticated \
     --max-instances=1 \
     --network=cymbal-vpc \
     --subnet=cymbal-vpc \
-    --set-env-vars=DB_HOST=<DB_PRIVATE_IP>,DB_USER=postgres,DB_PASSWORD=<DB_PASSWORD>,DB_NAME=cymbal
+    --set-env-vars=DB_HOST=$DB_PRIVATE_IP,DB_USER=postgres,DB_PASSWORD=$DB_PASSWORD,DB_NAME=cymbal
 
 # 2. Deploy the Web App (Allows public traffic, Private Egress to SQL)
 gcloud run deploy cymbal-webapp \
-    --image=us-central1-docker.pkg.dev/<PROJECT_ID>/cymbal-repo/webapp:latest \
+    --image=us-central1-docker.pkg.dev/$PROJECT_ID/cymbal-repo/webapp:latest \
     --region=us-central1 \
     --allow-unauthenticated \
     --network=cymbal-vpc \
     --subnet=cymbal-vpc \
-    --set-env-vars=DB_HOST=<DB_PRIVATE_IP>,DB_USER=postgres,DB_PASSWORD=<DB_PASSWORD>,DB_NAME=cymbal
+    --set-env-vars=DB_HOST=$DB_PRIVATE_IP,DB_USER=postgres,DB_PASSWORD=$DB_PASSWORD,DB_NAME=cymbal
+
 ```
 
 ---
@@ -321,7 +323,7 @@ Execute these commands in Cloud Shell to temporarily allow external access and a
 
 ```bash
 # A. Break policy inheritance and allow all domains at the project level
-gcloud resource-manager org-policies set-policy /dev/stdin --project=<PROJECT_ID> <<EOF
+gcloud resource-manager org-policies set-policy /dev/stdin --project=$PROJECT_ID <<EOF
 constraint: constraints/iam.allowedPolicyMemberDomains
 listPolicy:
   allValues: ALLOW
@@ -347,7 +349,8 @@ gcloud run services remove-iam-policy-binding cymbal-mcp \
   --role="roles/run.invoker"
 
 # B. Delete the project-level Org Policy override to restore strict inheritance
-gcloud resource-manager org-policies delete constraints/iam.allowedPolicyMemberDomains --project=<PROJECT_ID>
+gcloud resource-manager org-policies delete constraints/iam.allowedPolicyMemberDomains --project=$PROJECT_ID
+
 ```
 
 ---
