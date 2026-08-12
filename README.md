@@ -334,7 +334,7 @@ Execute these commands in Cloud Shell to temporarily allow external access and a
 
 ```bash
 # A. Break policy inheritance and allow all domains at the project level
-gcloud resource-manager org-policies set-policy /dev/stdin --project=gemini-enterprise-demo-502515 <<EOF
+gcloud resource-manager org-policies set-policy /dev/stdin --project=$PROJECT_ID <<EOF
 constraint: constraints/iam.allowedPolicyMemberDomains
 listPolicy:
   allValues: ALLOW
