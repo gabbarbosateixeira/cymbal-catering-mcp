@@ -492,10 +492,11 @@ Gemini Enterprise must have public access to your `cymbal-mcp` service to discov
 ### Quick Demonstration
 
 Creating a new order using the MCP actions
-<img width="1261" height="654" alt="Screen Recording 2026-08-12 at 2 47 07 PM" src="https://github.com/user-attachments/assets/102c590b-cd0d-41ec-9e27-71a73fd95891" />
+<img width="1250" height="647" alt="Screen Recording 2026-08-12 at 2 57 34 PM" src="https://github.com/user-attachments/assets/516282af-3c38-46c3-91df-ddf4074fed17" />
 
 Result in the app
-<img width="1261" height="645" alt="Screenshot 2026-08-12 at 2 53 12 PM" src="https://github.com/user-attachments/assets/b9485bc5-1039-49c9-8168-4b9d48625ace" />
+<img width="1250" height="647" alt="Screenshot 2026-08-12 at 2 59 16 PM" src="https://github.com/user-attachments/assets/129137ea-8296-4e13-afa3-717d1a356b5e" />
+
 
 ### 3. Run the Presentation Script (Conversational CRM & Ordering)
 
