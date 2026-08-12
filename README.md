@@ -334,23 +334,19 @@ Execute these commands in Cloud Shell to temporarily allow external access and a
 
 ```bash
 # A. Break policy inheritance and allow all domains at the project level
-gcloud resource-manager org-policies set-policy /dev/stdin --project=$PROJECT_ID <<EOF
+gcloud resource-manager org-policies set-policy /dev/stdin --project=gemini-enterprise-demo-502515 <<EOF
 constraint: constraints/iam.allowedPolicyMemberDomains
 listPolicy:
   allValues: ALLOW
   inheritFromParent: false
 EOF
 
-# B. Wait for Organization Policy changes to propagate (takes up to 1 minute)
-echo "Waiting 30 seconds for Org Policy to propagate..."
-sleep 30
-
-# C. Grant unauthenticated invoker permissions to your Cloud Run service
-# If this fails with FAILED_PRECONDITION, wait another 30 seconds and retry.
+# B. Grant unauthenticated invoker permissions to your Cloud Run service
 gcloud run services add-iam-policy-binding cymbal-mcp \
   --region=us-central1 \
   --member="allUsers" \
   --role="roles/run.invoker"
+
 ```
 
 
