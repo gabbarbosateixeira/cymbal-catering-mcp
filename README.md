@@ -18,8 +18,8 @@ The project demonstrates how to connect private enterprise databases (running on
 *   [Business Motivation & Goals](#-business-motivation--goals)
 *   [Key Components Built](#-key-components-built)
 *   [Infrastructure Requirements](#-infrastructure-requirements)
-*   [Local Configuration & Development](#%EF%B8%8F-local-configuration--development)
 *   [Step-by-Step Deployment Guide](#-step-by-step-deployment-guide)
+
 
     *   [Step 1: Network & Private Database Setup](#step-1-network--private-database-setup)
     *   [Step 2: Service Accounts & IAM Roles](#step-2-service-accounts--iam-roles)
@@ -80,45 +80,30 @@ Before deploying the code, you must ensure the following APIs are enabled in you
 *   `cloudbuild.googleapis.com` (Cloud Build)
 *   `artifactregistry.googleapis.com` (Container Image Registry)
 
-## ⚙️ Local Configuration & Development
-
-To run or test components of this repository locally, you can configure your environment using a `.env` file.
-
-1. **Copy the example configuration file**:
-   ```bash
-   cp .env.example .env
-   ```
-2. **Configure your environment**:
-   Open `.env` in your editor and fill out the values:
-   * `GCP_PROJECT`: Your Google Cloud Project ID (required for Vertex AI integrations).
-   * `GCP_LOCATION`: The target region (defaults to `us-central1`).
-   * `GEMINI_MODEL`: The target Gemini model (defaults to `gemini-2.5-pro`).
-   * Database credentials (`DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, etc. if you are running a local database instance).
-
-3. **Install dependencies and run the application**:
-   ```bash
-   npm install
-   npm run dev
-   ```
-   * This starts the frontend (port `3000`) and the backend API (port `3001`) concurrently.
-   * If running in **Google Cloud Shell**, preview the application by clicking the **Web Preview** button in the top-right corner of the terminal window and selecting **Preview on port 3000**.
-
-
----
-
-
 ## 🚀 Step-by-Step Deployment Guide
-
 
 > [!IMPORTANT]
 > **Environment Parameters Warning**: 
 > The commands and configurations in this guide contain placeholder values (e.g. Project ID `<PROJECT_ID>`, Database Host IP `<DB_PRIVATE_IP>`, and MCP Service URL `https://<MCP_SERVICE_URL>`). 
 > **You must replace these placeholders** with your own target project ID, SQL Private IP, and Cloud Run service URLs when deploying this codebase to your own GCP environment.
->
-> **Note on `.env` file:** The `.env` file created during local setup is ignored by Git and is not used during Cloud Run deployment. For remote deployment, configurations are set dynamically on Google Cloud via the `--set-env-vars` flags in the `gcloud run` commands below.
 
+### Getting Started in Google Cloud Shell
 
-Follow these sequential steps in your **Google Cloud Shell** terminal to deploy the complete architecture.
+1. **Open Google Cloud Shell** in your Google Cloud Console.
+2. **Clone this repository** to download the deployment configurations and codebase:
+   ```bash
+   git clone https://github.com/gabbarbosateixeira/cymbal-catering-mcp.git
+   cd cymbal-catering-mcp
+   ```
+3. **Identify your target GCP Project ID**:
+   Your active Project ID is automatically set in Cloud Shell. You can fetch and store it in a shell variable for easy copy-pasting:
+   ```bash
+   PROJECT_ID=$(gcloud config get-value project)
+   echo "Active Project ID: $PROJECT_ID"
+   ```
+
+Follow these sequential steps in your terminal to deploy the complete architecture.
+
 
 ### Step 1: Network & Private Database Setup
 
