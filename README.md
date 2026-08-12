@@ -342,13 +342,18 @@ listPolicy:
   inheritFromParent: false
 EOF
 
-# B. Grant unauthenticated invoker permissions to your Cloud Run service
+# B. Wait for Organization Policy changes to propagate (takes up to 1 minute)
+echo "Waiting 30 seconds for Org Policy to propagate..."
+sleep 30
+
+# C. Grant unauthenticated invoker permissions to your Cloud Run service
+# If this fails with FAILED_PRECONDITION, wait another 30 seconds and retry.
 gcloud run services add-iam-policy-binding cymbal-mcp \
   --region=us-central1 \
   --member="allUsers" \
   --role="roles/run.invoker"
 ```
-*Note: It can take up to 1 minute for the organization policy changes to propagate.*
+
 
 ### 🔴 Enable Domain Restriction (Post-Demo Cleanup)
 Once your presentations are complete, execute these commands to restore the strict parent domain policies and block public access:
