@@ -495,10 +495,10 @@ Gemini Enterprise must have public access to your `cymbal-mcp` service to discov
 
 ### Quick Demonstration
 
-Querying Customer info form the application using the MCP
+Creating a new order using the MCP actions
 <img width="632" height="327" alt="Query_customers" src="https://github.com/user-attachments/assets/79c54dc6-53a3-487f-ae38-521276718d5f" />
 
-Creating a new order using the MCP actions
+Querying Customer info form the application using the MCP
 <img width="632" height="327" alt="Query_New_Order" src="https://github.com/user-attachments/assets/c8fd86af-0458-48f3-81ce-cfc6574e7d0d" />
 
 Result in the app
