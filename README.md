@@ -61,8 +61,7 @@ This blueprint demonstrates how to:
 
 1.  **Catering Dashboard (Frontend)**: A React/Vite web application that displays real-time CRM customer profiles, booking calendars, supplier statuses, and menu catalog packages.
     
-    > **[PLACEHOLDER: Add Web Dashboard screenshot here]**
-    > *Suggested File Name: `media/dashboard_crm_view.png`*
+<img width="1261" height="643" alt="Screenshot 2026-08-12 at 2 11 27 PM" src="https://github.com/user-attachments/assets/b170c061-fefd-4fb0-bc91-d8dd5d30c371" />
     
 2.  **Business API Server (Backend)**: An Express server ([`server.js`](server.js)) serving REST endpoints for standard web UI database transactions.
 3.  **HTTP MCP Server**: An Express server ([`mcp-server-cymbal.js`](mcp-server-cymbal.js)) that implements the **Model Context Protocol Streamable HTTP Transport**, transforming standard SQL queries into structured tools that an LLM can list and execute.
@@ -495,6 +494,10 @@ gcloud run services proxy cymbal-webapp --region us-central1 --port 8081
 Gemini Enterprise must have public access to your `cymbal-mcp` service to discover and invoke the tools. Verify you have executed the **Disable Domain Restriction** commands in the pre-demo setup section, allowing unauthenticated traffic to the server.
 
 ### 3. Run the Presentation Script (Conversational CRM & Ordering)
+
+<img width="632" height="327" alt="Query_customers" src="https://github.com/user-attachments/assets/79c54dc6-53a3-487f-ae38-521276718d5f" />
+
+<img width="632" height="327" alt="Query_New_Order" src="https://github.com/user-attachments/assets/c8fd86af-0458-48f3-81ce-cfc6574e7d0d" />
 
 Open your Gemini Enterprise App chat window and perform the following sequence:
 
