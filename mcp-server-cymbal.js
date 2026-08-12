@@ -2,8 +2,12 @@ import express from 'express';
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
+import dotenv from 'dotenv';
 import { dbAll, dbGet, dbRun } from './db.js';
 import { randomUUID } from 'node:crypto';
+
+dotenv.config();
+
 
 const TAX_RATE = parseFloat(process.env.TAX_RATE || '0.085');
 const DEFAULT_DELIVERY_FEE = parseFloat(process.env.DEFAULT_DELIVERY_FEE || '35.00');

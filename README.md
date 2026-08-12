@@ -18,7 +18,9 @@ The project demonstrates how to connect private enterprise databases (running on
 *   [Business Motivation & Goals](#-business-motivation--goals)
 *   [Key Components Built](#-key-components-built)
 *   [Infrastructure Requirements](#-infrastructure-requirements)
+*   [Local Configuration & Development](#%EF%B8%8F-local-configuration--development)
 *   [Step-by-Step Deployment Guide](#-step-by-step-deployment-guide)
+
     *   [Step 1: Network & Private Database Setup](#step-1-network--private-database-setup)
     *   [Step 2: Service Accounts & IAM Roles](#step-2-service-accounts--iam-roles)
     *   [Step 3: Docker & Cloud Build Registry Setup](#step-3-docker--cloud-build-registry-setup)
@@ -32,50 +34,14 @@ The project demonstrates how to connect private enterprise databases (running on
 
 ---
 
-## 📐 Architecture Design
+## 📐 Architecture Overview
 
-The following diagram illustrates the secure network layout, showing how the frontend, backend, MCP server, and AI Agent interact through the **Cymbal VPC network** using **Private Services Access** to access the database without public IP exposures:
+The system is designed with a secure, decoupled layout that connects user-facing applications and conversational AI interfaces to a private transactional database:
 
-```mermaid
-flowchart TB
-    User([User CLI / UI]) -->|React UI| WebappRun
-    
-    subgraph Public Internet
-        Browser[Client Browser]
-        AgentSDK[Vertex AI Reasoning Engine / Agent SDK]
-    end
-
-    subgraph Google Cloud Project (<PROJECT_ID>)
-        subgraph Cymbal VPC Network (192.168.0.0/16)
-            direction LR
-            WebappRun[Cloud Run: cymbal-webapp]
-            MCPRun[Cloud Run: cymbal-mcp]
-            
-            subgraph Private Services Access Peering
-                CloudSQL[(Cloud SQL PostgreSQL: cymbal-pg)]
-            end
-        end
-        
-        ArtifactRegistry[Artifact Registry: cymbal-repo]
-        CloudBuild[Cloud Build]
-    end
-
-    %% Routing
-    Browser -->|HTTPS| WebappRun
-    AgentSDK -->|HTTP POST /mcp (Authenticated)| MCPRun
-    
-    WebappRun -->|VPC Egress| CloudSQL
-    MCPRun -->|VPC Egress| CloudSQL
-    
-    CloudBuild -->|Pushes Images| ArtifactRegistry
-    ArtifactRegistry -->|Deploys To| WebappRun
-    ArtifactRegistry -->|Deploys To| MCPRun
-
-    classDef gcp fill:#4285F4,stroke:#3b7bdb,stroke-width:2px,color:#fff;
-    classDef vpc fill:#f1f5f9,stroke:#cbd5e1,stroke-width:2px,stroke-dasharray: 5 5;
-    class WebappRun,MCPRun,CloudSQL,ArtifactRegistry,CloudBuild,AgentSDK gcp;
-    class CymbalVPC vpc;
-```
+1.  **Gemini Enterprise App (AI Chat Interface)**: The primary conversational portal for users. When a user asks questions or makes requests (e.g., *"Book an event for Robert"*), Gemini Enterprise translates these intents into API tool invocations and routes them directly to the registered MCP Server.
+2.  **Catering Dashboard (Web UI)**: A React web dashboard and Express backend API deployed on **Cloud Run** (`cymbal-webapp`) that displays CRM client profiles, calendars, and catering orders in real time.
+3.  **Cymbal MCP Server**: An Express server deployed on **Cloud Run** (`cymbal-mcp`) utilizing the Model Context Protocol (Streamable HTTP Transport). It acts as a secure API gateway, transforming database CRUD actions into structured tools that the Gemini LLM can discover and call.
+4.  **Private Database (Cloud SQL PostgreSQL)**: Hosted inside a custom **Cymbal VPC network** with no public IP address. It is peered using **Private Services Access**, guaranteeing that only the authorized Web App and MCP Server can query or modify the tables.
 
 ---
 
@@ -114,9 +80,26 @@ Before deploying the code, you must ensure the following APIs are enabled in you
 *   `cloudbuild.googleapis.com` (Cloud Build)
 *   `artifactregistry.googleapis.com` (Container Image Registry)
 
+## ⚙️ Local Configuration & Development
+
+To run or test components of this repository locally, you can configure your environment using a `.env` file.
+
+1. **Copy the example configuration file**:
+   ```bash
+   cp .env.example .env
+   ```
+2. **Configure your environment**:
+   Open `.env` in your editor and fill out the values:
+   * `GCP_PROJECT`: Your Google Cloud Project ID (required for Vertex AI integrations).
+   * `GCP_LOCATION`: The target region (defaults to `us-central1`).
+   * `GEMINI_MODEL`: The target Gemini model (defaults to `gemini-2.5-pro`).
+   * Database credentials (`DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, etc. if you are running a local database instance).
+
 ---
 
+
 ## 🚀 Step-by-Step Deployment Guide
+
 
 > [!IMPORTANT]
 > **Environment Parameters Warning**: 

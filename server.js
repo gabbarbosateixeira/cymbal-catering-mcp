@@ -3,7 +3,11 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import dotenv from 'dotenv';
 import { dbAll, dbGet, dbRun, initDb } from './db.js';
+
+dotenv.config();
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

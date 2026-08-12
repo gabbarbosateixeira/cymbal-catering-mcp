@@ -1,5 +1,6 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-central1-docker.pkg.dev/gemini-enterprise-demo-502515/cymbal-repo/webapp', '-f', 'Dockerfile.webapp', '.']
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/cymbal-repo/webapp', '-f', 'Dockerfile.webapp', '.']
 images:
-- 'us-central1-docker.pkg.dev/gemini-enterprise-demo-502515/cymbal-repo/webapp'
+- 'us-central1-docker.pkg.dev/$PROJECT_ID/cymbal-repo/webapp'
+
