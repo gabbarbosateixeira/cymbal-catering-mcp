@@ -105,6 +105,9 @@ To run or test components of this repository locally, you can configure your env
 > **Environment Parameters Warning**: 
 > The commands and configurations in this guide contain placeholder values (e.g. Project ID `<PROJECT_ID>`, Database Host IP `<DB_PRIVATE_IP>`, and MCP Service URL `https://<MCP_SERVICE_URL>`). 
 > **You must replace these placeholders** with your own target project ID, SQL Private IP, and Cloud Run service URLs when deploying this codebase to your own GCP environment.
+>
+> **Note on `.env` file:** The `.env` file created during local setup is ignored by Git and is not used during Cloud Run deployment. For remote deployment, configurations are set dynamically on Google Cloud via the `--set-env-vars` flags in the `gcloud run` commands below.
+
 
 Follow these sequential steps in your **Google Cloud Shell** terminal to deploy the complete architecture.
 
